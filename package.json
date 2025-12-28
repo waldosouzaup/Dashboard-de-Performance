@@ -9,10 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "recharts": "^3.6.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
-    "lucide-react": "^0.562.0"
+    "recharts": "2.12.7",
+    "lucide-react": "0.344.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
