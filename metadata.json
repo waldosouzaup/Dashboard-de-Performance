@@ -1,0 +1,5 @@
+{
+  "name": "Análise de performance por canais Dashboard",
+  "description": "A minimalist, clean sales dashboard for course performance tracking, integrating directly with Google Sheets for real-time data visualization.",
+  "requestFramePermissions": []
+}
