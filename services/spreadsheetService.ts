@@ -1,3 +1,4 @@
+
 import { SaleRecord } from '../types';
 
 const SPREADSHEET_ID = '1AJQWvfDryRJSxKXE6wKuB33JRzcAEAJb';
@@ -5,27 +6,24 @@ const SPREADSHEET_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID
 
 export const fetchSalesData = async (): Promise<SaleRecord[]> => {
   try {
-    const response = await fetch(SPREADSHEET_URL, { cache: 'no-store' });
+    const response = await fetch(SPREADSHEET_URL);
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error('Falha ao buscar dados da planilha');
     }
     const csvText = await response.text();
     return parseCSV(csvText);
   } catch (error) {
-    console.error('Falha ao sincronizar com Google Sheets:', error);
-    // Retorna array vazio em caso de erro para não quebrar a UI
+    console.error('Error fetching data:', error);
     return [];
   }
 };
 
 export const parseCSV = (csv: string): SaleRecord[] => {
-  if (!csv || csv.trim() === '') return [];
-  
   const cleanedCsv = csv.replace(/^\uFEFF/, '');
   const lines = cleanedCsv.split(/\r?\n/).filter(l => l.trim() !== '');
   if (lines.length < 2) return [];
 
-  // Detector de separador inteligente
+  // Detecta o separador (vírgula ou ponto-e-vírgula)
   const firstLine = lines[0];
   const commaCount = (firstLine.match(/,/g) || []).length;
   const semicolonCount = (firstLine.match(/;/g) || []).length;
@@ -57,40 +55,35 @@ export const parseCSV = (csv: string): SaleRecord[] => {
     h.toLowerCase()
      .normalize("NFD")
      .replace(/[\u0300-\u036f]/g, "")
-     .replace(/[^a-z0-9_]/g, "_") // Garante chaves limpas para mapeamento
+     .replace(/["']/g, "")
   );
   
   const idx = {
     data: headers.findIndex(h => h.includes('data')),
-    produto: headers.findIndex(h => h.includes('produto') || h.includes('curso') || h.includes('item')),
+    produto: headers.findIndex(h => h.includes('produto') || h.includes('curso')),
     quantidade: headers.findIndex(h => h.includes('quantidade') || h.includes('vendas') || h.includes('qtd')),
-    receita: headers.findIndex(h => h.includes('receita') || h.includes('valor') || h.includes('total') || h.includes('faturamento')),
-    origem: headers.findIndex(h => h.includes('origem') || h.includes('fonte') || h.includes('utm') || h.includes('canal')),
-    custo: headers.findIndex(h => h.includes('custo') || h.includes('investimento'))
+    receita: headers.findIndex(h => h.includes('receita') || h.includes('valor') || h.includes('total')),
+    origem: headers.findIndex(h => h.includes('origem') || h.includes('fonte') || h.includes('utm')),
+    custo: headers.findIndex(h => h.includes('custo'))
   };
 
   return lines.slice(1).map(line => {
     const values = splitLine(line);
     const getVal = (i: number) => (i >= 0 && i < values.length) ? values[i] : '';
 
-    // Parsing robusto de números (trata 1.000,50 e 1000.50)
-    const parseNumber = (val: string) => {
-      if (!val) return 0;
-      const normalized = val.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '');
-      return parseFloat(normalized) || 0;
-    };
-
-    const receita = parseNumber(getVal(idx.receita));
-    const custo = parseNumber(getVal(idx.custo));
-    const quantidade = parseInt(getVal(idx.quantidade).replace(/[^\d]/g, '')) || 0;
+    const rawReceita = getVal(idx.receita);
+    const receita = parseFloat(rawReceita.replace(/[^\d.-]/g, '').replace(',', '.')) || 0;
+    
+    const rawCusto = getVal(idx.custo);
+    const custo = parseFloat(rawCusto.replace(/[^\d.-]/g, '').replace(',', '.')) || 0;
 
     return {
       data: getVal(idx.data),
       produto: getVal(idx.produto) || 'Produto Indefinido',
-      quantidade_vendida: quantidade,
+      quantidade_vendida: parseInt(getVal(idx.quantidade)) || 0,
       receita: receita,
       origem: getVal(idx.origem) || 'Direto',
       custo_aquisicao: custo
     } as SaleRecord;
-  }).filter(record => record.receita > 0 || record.quantidade_vendida > 0);
+  }).filter(record => record.produto !== 'Produto Indefinido' || record.receita > 0);
 };
