@@ -1,20 +1,39 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
 
-# Run and deploy your AI Studio app
+# 01 Problema de Negócio
 
-This contains everything you need to run your app locally.
+Corretor de imóveis em Brasília com um grande volume de clientes em potencial que enfrentam dificuldades na criação de apresentações básicas dos imóveis disponíveis para venda.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1UCAuwq_q2D25Syw3g-rwU2il_-TvHe2q
+## 02 Contexto da Solução
 
-## Run Locally
-
-**Prerequisites:**  Node.js
+O corretor de imóveis investe em campanhas de anúncios no Google e na Meta, porém, carece de uma página dedicada para detalhar as propriedades, como fotos, vídeos e informações sobre a infraestrutura dos locais.
 
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## 03 Premissas Técnicas
+Conexão com o SUPABASE para administração backend dos imoveis.
+
+## 04 Estratégia de Implementação
+- Design claro e profissional para destacar imóveis em Brasília.
+- Presença online forte com foco em SEO local.
+- Aumentando visibilidade orgânica e oportunidades de negócio
+
+## 05 Resultados
+- Resultados Obtidos
+- Aceleração de 90% no tempo de apresentação dos imóveis.
+- Disponibilidade de conteúdo ininterrupta (24 horas por dia).
+- Simplificação da comunicação entre o cliente e o corretor.
+
+
+## 06 Tecnologias Utilizadas
+### O projeto foi desenvolvido utilizando as seguintes ferramentas:
+- **Design**: Google Stitch.
+- **Desenvolvimento**: (Front-end e Back-end): Google AI Studio.
+- **Infraestrutura**: Gerenciamento da Conexão com o Banco de Dados.
+
+
+## 👤 Autor
+- Waldo Eller
+- LinkedIn: Waldo Eller (https://www.waldoeller.com)
+- Link Projeto: (https://dvendas.netlify.app)
+
+
+
